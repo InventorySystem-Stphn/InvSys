@@ -10,6 +10,8 @@ const attributeRoutes = require("./routes/attributeRoutes")
 const attributeValueRoutes = require("./routes/attributeValueRoutes")
 const productRoutes = require("./routes/productRoutes")
 const orderRoutes = require("./routes/orderRoutes")
+const companyRoutes = require("./routes/companyRoutes")
+const profileRoutes = require("./routes/profileRoutes")
 
 mongoDbConnectionString.mongoConnect();
 
@@ -23,6 +25,8 @@ app.use("/attribute", attributeRoutes)
 app.use("/attributevalue",attributeValueRoutes)
 app.use("/product",productRoutes)
 app.use("/order",orderRoutes)
+app.use("/company",companyRoutes)
+app.use("/profile",profileRoutes)
 
 app.listen(5000, () => {
 	console.log("Server has started!")
