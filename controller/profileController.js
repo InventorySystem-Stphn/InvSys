@@ -13,26 +13,21 @@ fn.profileGet = async function (req, res) {
 
 fn.profilePost = async function (req, res) {
     try {
-        console.log(req.body)
+        let objReqBody = req.body;
+        let objProfile = new Profile();
+        let objProfileSchema = Profile.schema.obj;
         var stAscendingId;
         var arrProfile = await Profile.find().sort({ profileid: 1 })
         console.log("asc", arrProfile);
         for (var idx = 0; idx < arrProfile.length; idx++) {
             stAscendingId = arrCarrProfileompany[idx].profileid;
         }
-        console.log("stAscendingId", stAscendingId);
-        let objProfile = new Profile({
-            profileid: (stAscendingId) ? stAscendingId + 1 : 0,
-            username: req.body.username,
-            email: req.body.email,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            gender: req.body.gender,
-            group: req.body.group,
-            isActive: req.body.isActive,
-            createdby: req.body.createdby,
-            updatedby: req.body.updatedby,
-        })
+        objProfile.profileid = (stAscendingId) ? stAscendingId + 1: 0;
+        for(var idx in objReqBody){
+            if(objProfileSchema[idx]){
+                objProfile[idx] = objReqBody[idx];
+            }
+        }
         await objProfile.save()
         res.send(objProfile)
     } catch (e) {

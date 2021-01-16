@@ -13,7 +13,9 @@ fn.categoryGet = async function (req, res) {
 
 fn.categoryPost = async function (req, res) {
     try {
-        console.log(req.body)
+        let objReqCategory = req.body;
+        let objCategory = new Category();
+        let objCategorySchema = Category.schema.obj;
         var stAscendingId;
         var arrCategory = await Category.find().sort({ categoryid: 1 })
         console.log("asc", arrCategory);
@@ -21,15 +23,14 @@ fn.categoryPost = async function (req, res) {
             stAscendingId = arrCategory[idx].categoryid;
         }
         console.log("stAscendingId", stAscendingId);
-        let category = new Category({
-            categoryid: (stAscendingId) ? stAscendingId + 1 : 0,
-            categoryname: req.body.categoryname,
-            isActive: req.body.isActive,
-            createdby: req.body.createdby,
-            updatedby: req.body.updatedby,
-        })
-        await category.save()
-        res.send(category)
+        objCategory.categoryid = (stAscendingId) ? stAscendingId + 1 : 0;
+        for (var idx in objReqCategory) {
+            if (objCategorySchema[idx]) {
+                objCategory[idx] = objReqCategory[idx];
+            }
+        }
+        await objCategory.save()
+        res.send(objCategory)
     } catch (e) {
         console.log("error categoryPost", e);
     }

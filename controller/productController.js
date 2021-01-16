@@ -13,7 +13,9 @@ fn.productGet = async function (req, res) {
 
 fn.productPost = async function (req, res) {
     try {
-        console.log(req.body)
+        let objReqBody = req.body;
+        let objProduct = new Product();
+        let objProductSchema = Product.schema.obj;
         var stAscendingId;
         var arrProduct = await Product.find().sort({ productid: 1 })
         console.log("asc", arrProduct);
@@ -21,23 +23,12 @@ fn.productPost = async function (req, res) {
             stAscendingId = arrProduct[idx].productid;
         }
         console.log("stAscendingId", stAscendingId);
-        let objProduct = new Product({
-            productid: (stAscendingId) ? stAscendingId + 1 : 0,
-            productname: req.body.productname,
-            sku: req.body.sku,
-            price: req.body.price,
-            qty: req.body.qty,
-            description: req.body.description,
-            color: req.body.color,
-            size: req.body.size,
-            brand: req.body.brand,
-            category: req.body.category,
-            store: req.body.store,
-            availability: req.body.availability,
-            isActive: req.body.isActive,
-            createdby: req.body.createdby,
-            updatedby: req.body.updatedby,
-        })
+        objProduct.productid = (stAscendingId) ? stAscendingId + 1 : 0;
+        for(var idx in objReqBody){
+            if(objProductSchema[idx]){
+                objProduct[idx] = objReqBody[idx];
+            }
+        }
         await objProduct.save()
         res.send(objProduct)
     } catch (e) {

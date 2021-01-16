@@ -13,7 +13,9 @@ fn.companyGet = async function (req, res) {
 
 fn.companyPost = async function (req, res) {
     try {
-        console.log(req.body)
+        let objReqBody = req.body;
+        let objCompany = new Company();
+        let objCompanySchema = Company.schema.obj;
         var stAscendingId;
         var arrCompany = await Company.find().sort({ companyid: 1 })
         console.log("asc", arrCompany);
@@ -21,20 +23,12 @@ fn.companyPost = async function (req, res) {
             stAscendingId = arrCompany[idx].companyid;
         }
         console.log("stAscendingId", stAscendingId);
-        let objCompany = new Company({
-            companyid: (stAscendingId) ? stAscendingId + 1 : 0,
-            companyname: req.body.groupname,
-            chargeamount: req.body.chargeamount,
-            chargepercentage: req.body.chargepercentage,
-            address: req.body.address,
-            phone: req.body.phone,
-            country: req.body.country,
-            message: req.body.message,
-            currency: req.body.currency,
-            isActive: req.body.isActive,
-            createdby: req.body.createdby,
-            updatedby: req.body.updatedby,
-        })
+        objCompany.companyid = (stAscendingId) ? stAscendingId + 1 : 0;
+        for (var idx in objReqBody) {
+            if (objCompanySchema[idx]) {
+                objCompany[idx] = objReqBody[idx];
+            }
+        }
         await objCompany.save()
         res.send(objCompany)
     } catch (e) {

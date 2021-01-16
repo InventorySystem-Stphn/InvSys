@@ -14,6 +14,9 @@ fn.groupGet = async function (req, res) {
 fn.groupPost = async function (req, res) {
     try {
         console.log(req.body)
+        let objReqBody = req.body;
+        let objGroup = new Group();
+        let objGroupSchema = Group.schema.obj;
         var stAscendingId;
         var arrGroup = await Group.find().sort({ groupid: 1 })
         console.log("asc", arrGroup);
@@ -21,15 +24,14 @@ fn.groupPost = async function (req, res) {
             stAscendingId = arrGroup[idx].groupid;
         }
         console.log("stAscendingId", stAscendingId);
-        let group = new Group({
-            groupid: (stAscendingId) ? stAscendingId + 1 : 0,
-            groupname: req.body.groupname,
-            isActive: req.body.isActive,
-            createdby: req.body.createdby,
-            updatedby: req.body.updatedby,
-        })
-        await group.save()
-        res.send(group)
+        objGroup.groupid = (stAscendingId) ? stAscendingId + 1 : 0;
+        for(var idx in objReqBody){
+            if(objGroupSchema[idx]){
+                objGroup[idx] = objReqBody[idx];
+            }
+        }
+        await objGroup.save()
+        res.send(objGroup)
     } catch (e) {
         console.log("error groupPost", e);
     }

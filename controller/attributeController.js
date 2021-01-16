@@ -13,21 +13,23 @@ fn.attributeGet = async function (req, res) {
 
 fn.attributePost = async function (req, res) {
     try {
-        console.log(req.body)
+        let objReqBody = req.body;
+        let objAttribute = new Attribute();
+        let objAttributeSchema = Attribute.schema.obj;
         var stAscendingId;
         var arrAttribute = await Attribute.find().sort({ attributeid: 1 })
-        console.log("arrAttribute", arrAttribute);
+
         for (var idx = 0; idx < arrAttribute.length; idx++) {
             stAscendingId = arrAttribute[idx].attributeid;
         }
-        console.log("stAscendingId", stAscendingId);
-        let objAttribute = new Attribute({
-            attributeid: (stAscendingId) ? stAscendingId + 1 : 0,
-            attributename: req.body.attributename,
-            isActive: req.body.isActive,
-            createdby: req.body.createdby,
-            updatedby: req.body.updatedby,
-        })
+
+        objAttributeSchema.brandid = (stAscendingId) ? stAscendingId + 1 : 0;
+        for (var idx in objReqBody) {
+            if (objAttributeSchema[idx]) {
+                objAttribute[idx] = objReqBody[idx];
+            }
+        }
+
         await objAttribute.save()
         res.send(objAttribute)
     } catch (e) {
