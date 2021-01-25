@@ -6,6 +6,7 @@ var fn = {};
 
 fn.brandGet = async function (req, res) {
     let objBrand = await Brand.find();
+    res.header("Access-Control-Allow-Origin", "*");
     res.send(objBrand);
 }
 

@@ -1,5 +1,8 @@
 const express = require("express")
+const cors = require("cors")
 const app = express()
+app.use(express.static('public'))
+app.use(cors())
 const mongoose = require("mongoose")
 const mongoDbConnectionString = require("./config/config")
 const userRoutes = require("./routes/userRoutes")
